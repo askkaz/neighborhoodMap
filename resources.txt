@@ -1,0 +1,1 @@
+http://stackoverflow.com/questions/12722925/google-maps-and-knockoutjs
