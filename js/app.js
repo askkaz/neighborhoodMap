@@ -122,11 +122,12 @@ ko.bindingHandlers.map = {
       update: function(element, valueAccessor, allBindingsAccessor, viewModel){
        console.log('hello');
        var mapObj = ko.utils.unwrapObservable(valueAccessor());
-       var mapMarkers = mapObj.markers;
+       var mapMarkers = ko.utils.unwrapObservable(mapObj.markers);
+       var userMarker = ko.utils.unwrapObservable(mapObj.userMarker);
        for (marker in mapMarkers){
          mapMarkers[marker].setMap(map);
        }
-       mapObj.userMarker.setMap(map);
+       userMarker.setMap(map);
      }
 
    };
