@@ -148,6 +148,7 @@ var updatePrices = function(){
     viewModel.priceList.removeAll();
    $.ajax({
      url: "https://api.uber.com/v1/estimates/price",
+     dataType: 'jsonp',
      headers: {
        Authorization: "Token " + 'guQmO5RBKDkuf8vWZWqlrfBS9mX635G4_frn7ekR'
      },
