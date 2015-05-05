@@ -83,7 +83,7 @@ var userPosition = new google.maps.Marker({
   draggable: true,
   position: mapLatLng,
   title: "You are here",
-  icon: 'http://maps.google.com/mapfiles/arrow.png'});
+  icon: 'https://maps.google.com/mapfiles/arrow.png'});
 google.maps.event.addListener(userPosition,'dragend',function(){
   viewModel.userLat(this.position.A);
   viewModel.userLon(this.position.F);
