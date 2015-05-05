@@ -122,10 +122,11 @@ ko.bindingHandlers.map = {
       update: function(element, valueAccessor, allBindingsAccessor, viewModel){
        console.log('hello');
        var mapObj = ko.utils.unwrapObservable(valueAccessor());
-       var mapMarkers = ko.utils.unwrapObservable(mapObj.markers);
+       var mapMarkers = mapObj.markers;
        for (marker in mapMarkers){
          mapMarkers[marker].setMap(map);
        }
+       mapObj.userMarker.setMap(map);
      }
 
    };
@@ -171,6 +172,7 @@ var ViewModel = function() {
   lat: ko.observable(mapCenterLatitude),
   lng: ko.observable(mapCenterLongitude),
   markers: googleMarkers,
+  userMarker: userPosition
 });
  self.userLat=ko.observable(userLatitude);
  self.userLon=ko.observable(userLongitude);
