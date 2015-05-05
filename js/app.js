@@ -89,7 +89,7 @@ google.maps.event.addListener(userPosition,'dragend',function(){
   viewModel.userLon(this.position.F);
   updatePrices();
 });
-googleMarkers.push(userPosition);
+//googleMarkers.push(userPosition);
 
 
 
