@@ -154,8 +154,8 @@ var updatePrices = function(){
      data: {
       start_latitude: viewModel.userLat(),
       start_longitude: viewModel.userLon(),
-      end_latitude: marker.position.A,
-      end_longitude: marker.position.F
+      end_latitude: marker.position.position.lat(),
+      end_longitude: marker.position.position.lon()
     },
     success: function(result) {
       console.log(result.prices[0].estimate);
