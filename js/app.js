@@ -142,8 +142,8 @@ ko.bindingHandlers.map = {
 }
 
 var updatePrices = function(){
+  viewModel.priceList.removeAll();
   googleMarkers().forEach(function(marker){
-    viewModel.priceList.removeAll();
    $.ajax({
      url: "https://api.uber.com/v1/estimates/price",
      headers: {
