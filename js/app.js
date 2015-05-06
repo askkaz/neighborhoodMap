@@ -85,8 +85,8 @@ var userPosition = new google.maps.Marker({
   title: "You are here",
   icon: 'https://maps.google.com/mapfiles/arrow.png'});
 google.maps.event.addListener(userPosition,'dragend',function(){
-  viewModel.userLat(this.position.A);
-  viewModel.userLon(this.position.F);
+  viewModel.userLat(this.position.lat());
+  viewModel.userLon(this.position.lon());
   updatePrices();
 });
 //googleMarkers.push(userPosition);
@@ -154,8 +154,8 @@ var updatePrices = function(){
      data: {
       start_latitude: viewModel.userLat(),
       start_longitude: viewModel.userLon(),
-      end_latitude: marker.position.position.lat(),
-      end_longitude: marker.position.position.lon()
+      end_latitude: marker.position.lat(),
+      end_longitude: marker.position.lon()
     },
     success: function(result) {
       console.log(result.prices[0].estimate);
