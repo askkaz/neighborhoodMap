@@ -86,7 +86,7 @@ var userPosition = new google.maps.Marker({
   icon: 'https://maps.google.com/mapfiles/arrow.png'});
 google.maps.event.addListener(userPosition,'dragend',function(){
   viewModel.userLat(this.position.lat());
-  viewModel.userLon(this.position.lon());
+  viewModel.userLon(this.position.lng());
   updatePrices();
 });
 //googleMarkers.push(userPosition);
@@ -146,7 +146,7 @@ ko.bindingHandlers.map = {
 var updatePrices = function(){
   googleMarkers().forEach(function(marker){
     var thisLat=marker.position.lat();
-    var thisLon=marker.position.lon();
+    var thisLon=marker.position.lng();
     viewModel.priceList.removeAll();
    $.ajax({
      url: "https://api.uber.com/v1/estimates/price",
