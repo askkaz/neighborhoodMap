@@ -145,6 +145,8 @@ ko.bindingHandlers.map = {
 
 var updatePrices = function(){
   googleMarkers().forEach(function(marker){
+    var thisLat=marker.position.lat();
+    var thisLon=marker.position.lon();
     viewModel.priceList.removeAll();
    $.ajax({
      url: "https://api.uber.com/v1/estimates/price",
@@ -154,8 +156,8 @@ var updatePrices = function(){
      data: {
       start_latitude: viewModel.userLat(),
       start_longitude: viewModel.userLon(),
-      end_latitude: marker.position.lat(),
-      end_longitude: marker.position.lon()
+      end_latitude: thisLat,
+      end_longitude: thisLon
     },
     success: function(result) {
       console.log(result.prices[0].estimate);
