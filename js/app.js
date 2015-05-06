@@ -186,3 +186,4 @@ ko.applyBindings(viewModel);
 updatePrices();
 
 
+
