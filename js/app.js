@@ -151,8 +151,9 @@ ko.bindingHandlers.map = {
 }
 
 var updatePrices = function(){
-  viewModel.priceList.removeAll();
+
   googleMarkers().forEach(function(marker){
+    viewModel.priceList.removeAll();
     var thisLat=marker.position.lat();
     var thisLon=marker.position.lng();
 
