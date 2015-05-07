@@ -1,7 +1,7 @@
 //Redirect to https (needed for uber)
-var loc = window.location.href+''; 
-if (loc.indexOf('http://')==0){ 
-  window.location.href = loc.replace('http://','https://'); 
+var loc = window.location.href+'';
+if (loc.indexOf('http://')==0){
+  window.location.href = loc.replace('http://','https://');
 }
 
 var markers = [
@@ -94,10 +94,11 @@ google.maps.event.addListener(userPosition,'dragend',function(){
   viewModel.userLat(this.position.lat());
   viewModel.userLon(this.position.lng());
   updatePrices();
+
+
+
 });
 //googleMarkers.push(userPosition);
-
-
 
 ko.bindingHandlers.map = {
   init: function (element, valueAccessor, allBindingsAccessor, viewModel) {
@@ -150,11 +151,12 @@ ko.bindingHandlers.map = {
 }
 
 var updatePrices = function(){
+  viewModel.priceList.removeAll();
   googleMarkers().forEach(function(marker){
     var thisLat=marker.position.lat();
     var thisLon=marker.position.lng();
-    viewModel.priceList.removeAll();
-   $.ajax({
+
+    $.ajax({
      url: "https://api.uber.com/v1/estimates/price",
      headers: {
        Authorization: "Token " + 'guQmO5RBKDkuf8vWZWqlrfBS9mX635G4_frn7ekR'
@@ -168,10 +170,15 @@ var updatePrices = function(){
     success: function(result) {
       console.log(result.prices[0].estimate);
 
-      viewModel.priceList.push({price:marker.title+ ' ' +result.prices[0].estimate});
+      viewModel.priceList.push({title:marker.title+ ' ' +result.prices[0].estimate});
+    },
+    error: function(result){
+      viewModel.priceList.push({title:marker.title, price: '$5-7'});
     }
+
   });
- });
+  });
+
 }
 
 
@@ -186,7 +193,23 @@ var ViewModel = function() {
  self.userLat=ko.observable(userLatitude);
  self.userLon=ko.observable(userLongitude);
  this.priceList=new ko.observableArray([]);
-
+ self.chosenPlace=ko.observable();
+ self.placeSelected=function(place){
+  self.chosenPlace(place);
+  console.log(place.title);
+ }
+ self.isSelected=function(name){
+  var selectedPlace=self.chosenPlace();
+  if(selectedPlace){
+    return selectedPlace.title ==name;
+  }
+ }
+ this.sortedPrices = new ko.computed(function(){
+  return self.priceList().sort(function(left, right) { return left.title == right.title ? 0 : (left.title < right.title ? -1 : 1) });
+});
+ this.processListClick = function(item) {
+  console.log(item);
+}
 };
 viewModel=new ViewModel();
 ko.applyBindings(viewModel);
