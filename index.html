@@ -17,7 +17,7 @@
             <div class="col-md-4">
                 <h2 class>Locations:<span class="badge pull-right">Uber Price</span></h2>
 
-            <div class="list-group" data-bind="foreach: sortedPrices">
+            <div class="list-group" data-bind="foreach: priceList">
                 <a href="#" class="list-group-item" data-bind="$parent.placeSelected, css: { active: $parent.isSelected(name) }">
                         <span data-bind="text:title"></span>
                         <span class="badge" data-bind="text:price"></span>
