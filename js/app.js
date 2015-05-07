@@ -171,7 +171,7 @@ var updatePrices = function(){
     success: function(result) {
       console.log(result.prices[0].estimate);
 
-      viewModel.priceList.push({title:marker.title+ ' ' +result.prices[0].estimate});
+      viewModel.priceList.push({title:marker.title, price: result.prices[0].estimate});
     },
     error: function(result){
       viewModel.priceList.push({title:marker.title, price: '$5-7'});
@@ -205,9 +205,9 @@ var ViewModel = function() {
     return selectedPlace.title ==name;
   }
  }
- this.sortedPrices = new ko.computed(function(){
-  return self.priceList().sort(function(left, right) { return left.title == right.title ? 0 : (left.title < right.title ? -1 : 1) });
-});
+// this.sortedPrices = new ko.computed(function(){
+ // return self.priceList().sort(function(left, right) { return left.title == right.title ? 0 : (left.title < right.title ? -1 : 1) });
+//});
  this.processListClick = function(item) {
   console.log(item);
 }
