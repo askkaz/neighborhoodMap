@@ -6,6 +6,22 @@ if (loc.indexOf('http://')==0){
 
 var unsortedMarkers = [
 {
+  name: 'Mount Vernon',
+  lat: 38.708987,
+  lon: -77.086132
+},
+{
+  name: 'The Pentagon',
+  lat: 38.8710,
+  lon: -77.0560
+},
+{
+  name:'Udvar Hazy Center',
+  lat: 38.9114,
+  lon: -77.4441
+
+},
+{
   name: 'Washington Monument',
   lat: 38.8895,
   lon: -77.0352
@@ -39,11 +55,6 @@ var unsortedMarkers = [
   name: "Ford's Theatre",
   lat: 38.8967,
   lon: -77.0258
-},
-{
-  name: 'Warner Theatre',
-  lat: 38.8963,
-  lon: -77.0292
 },
 {
   name: 'US Capitol',
