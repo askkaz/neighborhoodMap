@@ -17,7 +17,7 @@
             <div class="col-md-4">
                 <h2 class>Locations:<span class="badge pull-right h2-badge blink-me">UberX Price</span></h2>
             <div class="list-group" data-bind="foreach: priceList">
-                <a href="#" class="list-group-item" data-bind="$parent.placeSelected, css: { active: $parent.isSelected(name) }">
+                <a href="#" class="list-group-item" data-bind="click:$parent.placeSelected">
                         <span data-bind="text:title"></span>
                         <span class="badge" data-bind="text:price, css: { blink_me: updating }"></span>
                 </a>

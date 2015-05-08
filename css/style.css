@@ -82,9 +82,10 @@ a.list-group-item{
 a.list-group-item:hover{
 	background-color: #94c7b6;
 }
-a.list-group-item:active{
-	background-color: #d3643b;
+a.list-group-item:focus{
+	background-color: #94c7b6;
 }
+
 
 .blink_me {
     -webkit-animation-name: blinker;
