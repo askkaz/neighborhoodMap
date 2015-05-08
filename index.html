@@ -15,14 +15,15 @@
         <div class ="row main-row">
             <div id = "map-canvas" class="col-md-8" data-bind="map: myMap"></div>
             <div class="col-md-4">
-                <h2 class>Locations:<span class="badge pull-right">Uber Price</span></h2>
-
+                <h2 class>Locations:<span class="badge pull-right h2-badge">UberX Price</span></h2>
             <div class="list-group" data-bind="foreach: priceList">
                 <a href="#" class="list-group-item" data-bind="$parent.placeSelected, css: { active: $parent.isSelected(name) }">
                         <span data-bind="text:title"></span>
                         <span class="badge" data-bind="text:price"></span>
                 </a>
             </div>
+        </div>
+        <div class="row col-md-12 wikiArea">Testing....
         </div>
     </div>
 
