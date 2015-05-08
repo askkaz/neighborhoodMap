@@ -4,7 +4,7 @@ if (loc.indexOf('http://')==0){
   window.location.href = loc.replace('http://','https://');
 }
 
-var markers = [
+var unsortedMarkers = [
 {
   name: 'Washington Monument',
   lat: 38.8895,
@@ -56,6 +56,13 @@ var markers = [
   lon: -77.0044
 }
 ];
+var markers=unsortedMarkers.sort(function(left, right) {
+  return left.name == right.name ? 0 : (left.name < right.name ? -1 : 1)
+});
+for (var i=0;i<markers.length;i++){
+  markers[i]['idx']=i;
+}
+
 var map = {};
 var mapCenterLatitude = 38.9;
 var mapCenterLongitude = -77.0;
@@ -75,7 +82,8 @@ for (marker in markers){
  bounds.extend(markerLatLng);
  var addMarker = new google.maps.Marker({
   position: markerLatLng,
-  title: markers[marker].name
+  title: markers[marker].name,
+  index:markers[marker].idx
 });
  (function(addMarker){
   google.maps.event.addListener(addMarker,'click',function(){
@@ -150,10 +158,15 @@ ko.bindingHandlers.map = {
   //TODO something....
 }
 
+var priceListItem = function(title,price){
+  this.title=title;
+  this.price=price;
+}
+
 var updatePrices = function(){
 
   googleMarkers().forEach(function(marker){
-    viewModel.priceList.removeAll();
+    //viewModel.priceList.removeAll();
     var thisLat=marker.position.lat();
     var thisLon=marker.position.lng();
 
@@ -169,17 +182,21 @@ var updatePrices = function(){
       end_longitude: thisLon
     },
     success: function(result) {
-      console.log(result.prices[0].estimate);
-
-      viewModel.priceList.push({title:marker.title, price: result.prices[0].estimate});
+      viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, result.prices[0].estimate));
     },
     error: function(result){
-      viewModel.priceList.push({title:marker.title, price: '$5-7'});
+      viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable'));
     }
 
   });
   });
 
+}
+
+var initPrices = function(){
+  googleMarkers().forEach(function(marker){
+    viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable'));
+  });
 }
 
 
@@ -194,6 +211,11 @@ var ViewModel = function() {
  self.userLat=ko.observable(userLatitude);
  self.userLon=ko.observable(userLongitude);
  this.priceList=new ko.observableArray([]);
+ for (marker in markers){
+  this.priceList.push({title:'',price:''});
+ }
+
+
  self.chosenPlace=ko.observable();
  self.placeSelected=function(place){
   self.chosenPlace(place);
@@ -214,7 +236,7 @@ var ViewModel = function() {
 };
 viewModel=new ViewModel();
 ko.applyBindings(viewModel);
-
+initPrices();
 updatePrices();
 
 
