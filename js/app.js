@@ -182,7 +182,9 @@ var updatePrices = function() {
         end_longitude: thisLon
       },
       success: function(result) {
-        viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, result.prices[0].estimate,0));
+        (result.prices[0] ? viewModel.priceList.replace(viewModel.priceList()[marker.index],
+          new priceListItem(marker.title, result.prices[0].estimate,0)) :
+        viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable',0)));
       },
       error: function(result) {
         viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable',0));
