@@ -157,9 +157,10 @@ var updateCurrentMarker = function(marker) {
   //TODO something....
 }
 
-var priceListItem = function(title, price) {
+var priceListItem = function(title, price, updating) {
   this.title = title;
   this.price = price;
+  this.updating = updating;
 }
 
 var updatePrices = function() {
@@ -168,7 +169,7 @@ var updatePrices = function() {
     //viewModel.priceList.removeAll();
     var thisLat = marker.position.lat();
     var thisLon = marker.position.lng();
-
+    viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Fetching...',1));
     $.ajax({
       url: "https://api.uber.com/v1/estimates/price",
       headers: {
@@ -181,10 +182,10 @@ var updatePrices = function() {
         end_longitude: thisLon
       },
       success: function(result) {
-        viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, result.prices[0].estimate));
+        viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, result.prices[0].estimate,0));
       },
       error: function(result) {
-        viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable'));
+        viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable',0));
       }
 
     });
@@ -194,7 +195,7 @@ var updatePrices = function() {
 
 var initPrices = function() {
   googleMarkers().forEach(function(marker) {
-    viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable'));
+    viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable',0));
   });
 }
 
@@ -213,7 +214,8 @@ var ViewModel = function() {
   for (marker in markers) {
     this.priceList.push({
       title: '',
-      price: ''
+      price: '',
+      updating: 0
     });
   }
 
