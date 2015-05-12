@@ -130,7 +130,7 @@ var ViewModel = function(){
           end_longitude: place.marker.position.lng()
       },
       success: function(result) {
-        (result.prices[0] ? place.price(result.prices[0]) : place.price('Unavailable'));
+        (result.prices[0] ? place.price(result.prices[0].estimate) : place.price('Unavailable'));
       },
       error: function(result) {
         place.price('Unavailable');
