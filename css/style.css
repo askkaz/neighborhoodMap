@@ -86,7 +86,9 @@ a.list-group-item:focus{
 	background-color: #94c7b6;
 }
 
-
+a:focus{
+	outline: none;
+}
 .blink_me {
     -webkit-animation-name: blinker;
     -webkit-animation-duration: 1s;

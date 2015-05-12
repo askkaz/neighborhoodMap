@@ -1,6 +1,6 @@
 //Redirect to https (needed for uber)
 var loc = window.location.href + '';
-if (loc.indexOf('http://') == 0) {
+if (loc.indexOf('http://askkaz') == 0) {
   window.location.href = loc.replace('http://', 'https://');
 }
 
@@ -57,60 +57,99 @@ var unsortedMarkers = [{
 var markers = unsortedMarkers.sort(function(left, right) {
   return left.name == right.name ? 0 : (left.name < right.name ? -1 : 1)
 });
-for (var i = 0; i < markers.length; i++) {
-  markers[i]['idx'] = i;
+for (marker in markers){
+  markers[marker].latLng=new google.maps.LatLng(markers[marker].lat, markers[marker].lon);
 }
 
 var map = {};
-var mapCenterLatitude = 38.9;
-var mapCenterLongitude = -77.0;
-var userLatitude = 38.9;
-var userLongitude = -77.0;
-var mapLatLng = new google.maps.LatLng(mapCenterLatitude, mapCenterLongitude);
-var bounds = new google.maps.LatLngBounds();
-var infoWindow = new google.maps.InfoWindow({
-  content: ''
-});
-var infoContent = '';
 
-var googleMarkers = ko.observableArray();
-for (marker in markers) {
-  //getEstimatesForUserLocation(markers[marker].lat,markers[marker].lon);
-  markerLatLng = new google.maps.LatLng(markers[marker].lat, markers[marker].lon);
-  bounds.extend(markerLatLng);
-  var addMarker = new google.maps.Marker({
-    position: markerLatLng,
-    title: markers[marker].name,
-    index: markers[marker].idx
+var Place = function(data){
+  var self=this;
+  this.marker = new google.maps.Marker({
+    position: data.latLng,
+      title: data.name
+  })
+  google.maps.event.addListener(this.marker,'click', function(){
+    viewModel.switchPlace(self);
   });
-  (function(addMarker) {
-    google.maps.event.addListener(addMarker, 'click', function() {
-      updateCurrentMarker(addMarker);
-    });
-  })(addMarker);
-  googleMarkers.push(addMarker);
+  this.price = ko.observable('Unavailable');
+  this.updating = ko.observable(false);
+  this.isSelected = ko.observable(false);
 }
 
-var userPosition = new google.maps.Marker({
-  draggable: true,
-  position: mapLatLng,
-  title: "You are here",
-  icon: 'https://maps.google.com/mapfiles/arrow.png'
-});
-google.maps.event.addListener(userPosition, 'dragend', function() {
-  viewModel.userLat(this.position.lat());
-  viewModel.userLon(this.position.lng());
-  updatePrices();
+var ViewModel = function(){
+  var self = this;
+  self.placeList = ko.observableArray([]);
+  self.bounds = new google.maps.LatLngBounds();
+  markers.forEach(function (markerItem){
+    self.placeList.push(new Place(markerItem));
+    self.bounds.extend(markerItem.latLng);
+  })
+  self.iWindow = new google.maps.InfoWindow({
+    content: 'test'
+  });
+  self.mapCenterLatitude = 38.9;
+  self.mapCenterLongitude = -77.0;
+  self.userLatitude = ko.observable(38.9);
+  self.userLongitude = ko.observable(-77.0);
+  self.mapLatLng = new google.maps.LatLng(self.mapCenterLatitude, self.mapCenterLongitude);
+  self.userPosition = new google.maps.Marker({
+    draggable: true,
+    position: self.mapLatLng,
+    title: "You are here",
+    icon: 'https://maps.google.com/mapfiles/arrow.png'
+  });
+
+  google.maps.event.addListener(self.userPosition, 'dragend', function() {
+    self.userLatitude(this.position.lat());
+    self.userLongitude(this.position.lng());
+    self.updatePrices();
+  });
+  this.currentPlace=ko.observable();
+  this.switchPlace = function(clickedPlace){
+    self.currentPlace(clickedPlace);
+    self.iWindow.setContent(self.currentPlace().marker.title);
+    self.iWindow.open(map,self.currentPlace().marker);
+    self.currentPlace().isSelected(true);
+  };
+  this.switchPlace(this.placeList()[0]);
+
+  self.updatePrices = function(){
+    this.placeList().forEach(function(place){
+      place.price('Fetching...');
+      place.updating(true);
+      $.ajax({
+        url: "https://api.uber.com/v1/estimates/price",
+        headers: {
+         Authorization: "Token " + 'guQmO5RBKDkuf8vWZWqlrfBS9mX635G4_frn7ekR'
+        },
+        data: {
+          start_latitude: self.userLatitude(),
+          start_longitude: self.userLongitude(),
+          end_latitude: place.marker.position.lat(),
+          end_longitude: place.marker.position.lng()
+      },
+      success: function(result) {
+        (result.prices[0] ? place.price(result.prices[0]) : place.price('Unavailable'));
+      },
+      error: function(result) {
+        place.price('Unavailable');
+
+      }
+
+      });
+
+          place.updating(false);
 
 
+  });
+}
+}
 
-});
-//googleMarkers.push(userPosition);
 
 ko.bindingHandlers.map = {
   init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
     var mapObj = ko.utils.unwrapObservable(valueAccessor());
-
     //Remove the native google maps POI popups
     var remove_poi = [{
       "featureType": "poi",
@@ -120,127 +159,29 @@ ko.bindingHandlers.map = {
       }]
     }]
     var mapOptions = {
-      center: mapLatLng,
+      center: mapObj.mapLatLng,
       zoom: 14,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
-      styles: remove_poi
+      styles: remove_poi,
+      scrollWheel: false
     };
     map = new google.maps.Map(element, mapOptions);
-    map.fitBounds(bounds);
+    map.fitBounds(mapObj.bounds);
     google.maps.event.addDomListener(window, 'load', this);
     var input = /** @type {HTMLInputElement} */ (
       document.getElementById('pac-input'));
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
   },
   update: function(element, valueAccessor, allBindingsAccessor, viewModel) {
-    console.log('hello');
-    var mapObj = ko.utils.unwrapObservable(valueAccessor());
-    var mapMarkers = ko.utils.unwrapObservable(mapObj.markers);
-    var userMarker = ko.utils.unwrapObservable(mapObj.userMarker);
-    for (marker in mapMarkers) {
-      mapMarkers[marker].setMap(map);
-    }
-    userMarker.setMap(map);
-  }
-
-};
-
-var updateCurrentMarker = function(marker) {
-  (function(marker) {
-    infoContent = marker.title;
-    infoWindow.setContent(infoContent);
-  })(marker);
-  infoWindow.open(map, marker);
-  //marker.visible=false;
-  //viewModel.myMap().markers.valueHasMutated();
-  //TODO something....
-}
-
-var priceListItem = function(title, price, updating) {
-  this.title = title;
-  this.price = price;
-  this.updating = updating;
-}
-
-var updatePrices = function() {
-
-  googleMarkers().forEach(function(marker) {
-    //viewModel.priceList.removeAll();
-    var thisLat = marker.position.lat();
-    var thisLon = marker.position.lng();
-    viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Fetching...',1));
-    $.ajax({
-      url: "https://api.uber.com/v1/estimates/price",
-      headers: {
-        Authorization: "Token " + 'guQmO5RBKDkuf8vWZWqlrfBS9mX635G4_frn7ekR'
-      },
-      data: {
-        start_latitude: viewModel.userLat(),
-        start_longitude: viewModel.userLon(),
-        end_latitude: thisLat,
-        end_longitude: thisLon
-      },
-      success: function(result) {
-        (result.prices[0] ? viewModel.priceList.replace(viewModel.priceList()[marker.index],
-          new priceListItem(marker.title, result.prices[0].estimate,0)) :
-        viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable',0)));
-      },
-      error: function(result) {
-        viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable',0));
-      }
-
-    });
-  });
-
-}
-
-var initPrices = function() {
-  googleMarkers().forEach(function(marker) {
-    viewModel.priceList.replace(viewModel.priceList()[marker.index], new priceListItem(marker.title, 'Unavailable',0));
-  });
-}
-
-
-var ViewModel = function() {
-  var self = this;
-  self.myMap = ko.observable({
-    lat: ko.observable(mapCenterLatitude),
-    lng: ko.observable(mapCenterLongitude),
-    markers: googleMarkers,
-    userMarker: userPosition
-  });
-  self.userLat = ko.observable(userLatitude);
-  self.userLon = ko.observable(userLongitude);
-  this.priceList = new ko.observableArray([]);
-  for (marker in markers) {
-    this.priceList.push({
-      title: '',
-      price: '',
-      updating: 0
-    });
-  }
-
-
-  self.chosenPlace = ko.observable();
-  self.placeSelected = function(place) {
-    self.chosenPlace(place);
-    console.log(place.title);
-  }
-  self.isSelected = function(name) {
-      var selectedPlace = self.chosenPlace();
-      if (selectedPlace) {
-        return selectedPlace.title == name;
-      }
-    }
-    // this.sortedPrices = new ko.computed(function(){
-    // return self.priceList().sort(function(left, right) { return left.title == right.title ? 0 : (left.title < right.title ? -1 : 1) });
-    //});
-  this.processListClick = function(item) {
-    console.log(item);
+     var mapObj = ko.utils.unwrapObservable(valueAccessor());
+     var places = ko.utils.unwrapObservable(mapObj.placeList());
+     var userMarker = ko.utils.unwrapObservable(mapObj.userPosition);
+     for (place in places) {
+       places[place].marker.setMap(map);
+     }
+     userMarker.setMap(map);
   }
 };
+
 viewModel = new ViewModel();
 ko.applyBindings(viewModel);
-initPrices();
-updatePrices();
