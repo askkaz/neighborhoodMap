@@ -154,7 +154,7 @@ var ViewModel = function() {
       });
     });
   }
-
+  self.updatePrices();
 
 }
 
