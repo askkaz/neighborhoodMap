@@ -131,17 +131,15 @@ var ViewModel = function(){
       },
       success: function(result) {
         (result.prices[0] ? place.price(result.prices[0].estimate) : place.price('Unavailable'));
+        place.updating(false);
       },
       error: function(result) {
         place.price('Unavailable');
+        place.updating(false);
 
       }
 
       });
-
-          place.updating(false);
-
-
   });
 }
 }
