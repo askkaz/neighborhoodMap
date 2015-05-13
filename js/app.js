@@ -234,12 +234,7 @@ ko.bindingHandlers.map = {
       zoom: 14,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       styles: remove_poi,
-      scrollwheel: false,
-      draggable: false,
-      zoomControl:false,
-      scaleControl:false,
-      mapTypeControl:false,
-      disableDefaultUI:true
+      scrollwheel: false
     };
     map = new google.maps.Map(element, mapOptions);
     map.fitBounds(mapObj.bounds);
