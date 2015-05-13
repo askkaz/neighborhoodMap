@@ -90,10 +90,14 @@ var ViewModel = function() {
   });
   self.mapCenterLatitude = 38.9;
   self.mapCenterLongitude = -77.0;
-  self.userLatitude = ko.observable(38.87);
-  self.userLongitude = ko.observable(-77.24);
+  self.userLatitude = ko.observable(38.78);
+  self.userLongitude = ko.observable(-77.27);
   self.wikiText = ko.observable('');
   self.wikiLink = ko.observable('');
+  self.userWindow = new google.maps.InfoWindow({
+    content: '<h5>Click on the map to change your start location!</h5>'
+  })
+
   self.mapLatLng = new google.maps.LatLng(self.mapCenterLatitude, self.mapCenterLongitude);
   self.userLatLng = new google.maps.LatLng(self.userLatitude(),self.userLongitude());
   self.userPosition = new google.maps.Marker({
@@ -101,13 +105,14 @@ var ViewModel = function() {
     title: "You are here",
     icon: 'https://maps.google.com/mapfiles/arrow.png'
   });
-
+  self.userWindow.open(map, self.userPosition);
 
 
   google.maps.event.addListener(self.userPosition, 'position_changed', function() {
     self.userLatitude(this.position.lat());
     self.userLongitude(this.position.lng());
     self.updatePrices();
+    self.userWindow.close();
   });
 
   self.currentPlace = ko.observable();
