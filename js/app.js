@@ -18,7 +18,7 @@ var markers = [{
   lat: 38.8893,
   lon: -77.0501
 }, {
-  name: 'Martin Luther King, Jr. Memorial',
+  name: 'MLK, Jr. Memorial',
   lat: 38.8861,
   lon: -77.0450
 }, {
