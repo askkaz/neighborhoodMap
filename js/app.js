@@ -4,12 +4,24 @@ var loc = window.location.href + '';
 if (loc.indexOf('http://askkaz') === 0) {
   window.location.href = loc.replace('http://', 'https://');
 }
-
+//MODEL
 var offMapMarker = {
   name: 'No matching results....',
   latlng: new google.maps.LatLng(0, 89)
 };
-var unsortedMarkers = [{
+var markers = [{
+  name: "Ford's Theatre",
+  lat: 38.8967,
+  lon: -77.0258
+}, {
+  name: 'Lincoln Memorial',
+  lat: 38.8893,
+  lon: -77.0501
+},{
+  name: 'Martin Luther King, Jr. Memorial',
+  lat: 38.8861,
+  lon: -77.0450
+},{
   name: 'Mount Vernon',
   lat: 38.708987,
   lon: -77.086132
@@ -17,32 +29,16 @@ var unsortedMarkers = [{
   name: 'The Pentagon',
   lat: 38.8710,
   lon: -77.0560
-}, {
+},   {
+  name: 'The White House',
+  lat: 38.8977,
+  lon: -77.0366
+},    {
   name: 'Udvar Hazy Center',
   lat: 38.9114,
   lon: -77.4441
 
-}, {
-  name: 'Washington Monument',
-  lat: 38.8895,
-  lon: -77.0352
-}, {
-  name: 'The White House',
-  lat: 38.8977,
-  lon: -77.0366
-}, {
-  name: 'Lincoln Memorial',
-  lat: 38.8893,
-  lon: -77.0501
-}, {
-  name: 'Martin Luther King, Jr. Memorial',
-  lat: 38.8861,
-  lon: -77.0450
-}, {
-  name: "Ford's Theatre",
-  lat: 38.8967,
-  lon: -77.0258
-}, {
+},{
   name: 'US Capitol',
   lat: 38.8898,
   lon: -77.0091
@@ -50,10 +46,11 @@ var unsortedMarkers = [{
   name: 'US Supreme Court',
   lat: 38.8906,
   lon: -77.0044
+},{
+  name: 'Washington Monument',
+  lat: 38.8895,
+  lon: -77.0352
 }];
-var markers = unsortedMarkers.sort(function(left, right) {
-  return left.name == right.name ? 0 : (left.name < right.name ? -1 : 1);
-});
 for (var marker in markers) {
   if (markers.hasOwnProperty(marker)) {
     markers[marker].latLng = new google.maps.LatLng(markers[marker].lat, markers[marker].lon);
@@ -64,17 +61,17 @@ var map = {};
 
 var Place = function(data) {
   var self = this;
-  this.marker = new google.maps.Marker({
+  self.marker = new google.maps.Marker({
     position: data.latLng,
     title: data.name
   });
   google.maps.event.addListener(this.marker, 'click', function() {
     viewModel.switchPlace(self);
   });
-  this.price = ko.observable('Unavailable');
-  this.updating = ko.observable(false);
-  this.isSelected = ko.observable(false);
-  this.matchesSearch = ko.observable(true);
+  self.price = ko.observable('Unavailable');
+  self.updating = ko.observable(false);
+  self.isSelected = ko.observable(false);
+  self.matchesSearch = ko.observable(true);
 };
 
 
