@@ -1,9 +1,14 @@
-//Redirect to https (needed for uber)
+'use strict'
+//Redirect to https if necessary... (needed for uber)
 var loc = window.location.href + '';
 if (loc.indexOf('http://askkaz') == 0) {
   window.location.href = loc.replace('http://', 'https://');
 }
 
+var offMapMarker = {
+  name: 'No matching results....',
+  latlng: new google.maps.LatLng(0, 89)
+}
 var unsortedMarkers = [{
   name: 'Mount Vernon',
   lat: 38.708987,
@@ -49,7 +54,7 @@ var unsortedMarkers = [{
 var markers = unsortedMarkers.sort(function(left, right) {
   return left.name == right.name ? 0 : (left.name < right.name ? -1 : 1)
 });
-for (marker in markers) {
+for (var marker in markers) {
   markers[marker].latLng = new google.maps.LatLng(markers[marker].lat, markers[marker].lon);
 }
 
@@ -67,10 +72,13 @@ var Place = function(data) {
   this.price = ko.observable('Unavailable');
   this.updating = ko.observable(false);
   this.isSelected = ko.observable(false);
+  this.matchesSearch = ko.observable(true);
 }
+
 
 var ViewModel = function() {
   var self = this;
+  self.searchInput = ko.observable('');
   self.placeList = ko.observableArray([]);
   self.bounds = new google.maps.LatLngBounds();
   markers.forEach(function(markerItem) {
@@ -78,46 +86,54 @@ var ViewModel = function() {
     self.bounds.extend(markerItem.latLng);
   })
   self.iWindow = new google.maps.InfoWindow({
-    content: 'test'
+    content: ''
   });
   self.mapCenterLatitude = 38.9;
   self.mapCenterLongitude = -77.0;
-  self.userLatitude = ko.observable(38.9);
-  self.userLongitude = ko.observable(-77.0);
-  self.wikiText=ko.observable('');
+  self.userLatitude = ko.observable(38.87);
+  self.userLongitude = ko.observable(-77.24);
+  self.wikiText = ko.observable('');
+  self.wikiLink = ko.observable('');
   self.mapLatLng = new google.maps.LatLng(self.mapCenterLatitude, self.mapCenterLongitude);
+  self.userLatLng = new google.maps.LatLng(self.userLatitude(),self.userLongitude());
   self.userPosition = new google.maps.Marker({
-    draggable: true,
-    position: self.mapLatLng,
+    position: self.userLatLng,
     title: "You are here",
     icon: 'https://maps.google.com/mapfiles/arrow.png'
   });
 
-  google.maps.event.addListener(self.userPosition, 'dragend', function() {
+
+
+  google.maps.event.addListener(self.userPosition, 'position_changed', function() {
     self.userLatitude(this.position.lat());
     self.userLongitude(this.position.lng());
     self.updatePrices();
   });
-  this.currentPlace = ko.observable();
-  self.updateWiki = function() {
-    var wikiRequest = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=200&explaintext&titles=' + self.currentPlace().marker.title + '&format=json&redirects'; //http://en.wikipedia.org/w/api.php?action=opensearch&search=' + cityInput + '&format=json&callback=wikiCallback';
-    var wikiTimeout = setTimeout(function() {
-      self.wikiText("failed to get wiki resources");
-    }, 8000);
 
+  self.currentPlace = ko.observable();
+  self.updateWiki = function() {
+    //http://en.wikipedia.org/?curid=152271
+    var wikiRequest = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=300&explaintext&titles=' + self.currentPlace().marker.title + '&format=json&redirects';
+    var wikiTimeout = setTimeout(function() {
+      self.wikiText("Failed to get wiki resources");
+      self.wikiLink('#');
+    }, 8000);
     $.ajax({
       url: wikiRequest,
       dataType: 'jsonp',
       success: function(response) {
         var pages = response.query.pages;
-        for (page in pages) {
+
+        for (var page in pages) {
           self.wikiText(pages[page].extract);
+          self.wikiLink('http://en.wikipedia.org/?curid=' + response.query.pages[page].pageid);
         }
         clearTimeout(wikiTimeout);
       }
     });
   }
   this.switchPlace = function(clickedPlace) {
+    (self.currentPlace() ? self.currentPlace().isSelected(false) : 0);
     self.currentPlace(clickedPlace);
     self.iWindow.setContent(self.currentPlace().marker.title);
     self.iWindow.open(map, self.currentPlace().marker);
@@ -130,6 +146,9 @@ var ViewModel = function() {
     this.placeList().forEach(function(place) {
       place.price('Fetching...');
       place.updating(true);
+      var uberTimeout = setTimeout(function() {
+        place.price('Unavailable');
+      }, 8000);
       $.ajax({
         url: "https://api.uber.com/v1/estimates/price",
         headers: {
@@ -152,10 +171,32 @@ var ViewModel = function() {
         }
 
       });
+      clearTimeout(uberTimeout);
     });
-  }
-  self.updatePrices();
+  };
+  self.noPlace = new Place(offMapMarker);
+  self.searchInput.subscribe(function(newVal) {
 
+    var firstPlace = {};
+    var re = new RegExp('(^|\\s)'+newVal, 'i');
+    console.log(re);
+    for (var place in self.placeList()) {
+      console.log(self.placeList()[place].marker.title);
+      if (re.exec(self.placeList()[place].marker.title)) {
+        self.placeList()[place].matchesSearch(true);
+        self.placeList()[place].marker.setVisible(true);
+        if (!firstPlace.marker) {
+          firstPlace = self.placeList()[place];
+        }
+      } else {
+        self.placeList()[place].matchesSearch(false);
+        self.placeList()[place].marker.setVisible(false);
+      }
+    }
+    (firstPlace.marker ? self.switchPlace(firstPlace) : self.switchPlace(self.noPlace));
+
+  });
+  self.updatePrices();
 }
 
 
@@ -183,17 +224,28 @@ ko.bindingHandlers.map = {
     var input = /** @type {HTMLInputElement} */ (
       document.getElementById('pac-input'));
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
+
+
+
   },
   update: function(element, valueAccessor, allBindingsAccessor, viewModel) {
     var mapObj = ko.utils.unwrapObservable(valueAccessor());
     var places = ko.utils.unwrapObservable(mapObj.placeList());
     var userMarker = ko.utils.unwrapObservable(mapObj.userPosition);
-    for (place in places) {
+    for (var place in places) {
       places[place].marker.setMap(map);
     }
     userMarker.setMap(map);
+      google.maps.event.addListener(map, 'click', function(event) {
+    placeMarker(event.latLng);
+  });
+
+  function placeMarker(location) {
+    userMarker.setPosition(location);
+  }
+
   }
 };
 
-viewModel = new ViewModel();
+var viewModel=new ViewModel;
 ko.applyBindings(viewModel);
