@@ -193,7 +193,6 @@ var ViewModel = function() {
 
     var firstPlace = {};
     var re = new RegExp('(^|\\s)' + newVal, 'i');
-    console.log(re);
     for (var place in self.placeList()) {
 
       if (self.placeList().hasOwnProperty(place)) {
