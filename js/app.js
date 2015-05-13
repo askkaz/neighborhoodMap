@@ -1,4 +1,4 @@
-'use strict';
+//'use strict';
 //Redirect to https if necessary... (needed for uber)
 var loc = window.location.href + '';
 if (loc.indexOf('http://askkaz') === 0) {
