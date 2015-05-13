@@ -17,11 +17,11 @@ var markers = [{
   name: 'Lincoln Memorial',
   lat: 38.8893,
   lon: -77.0501
-},{
+}, {
   name: 'Martin Luther King, Jr. Memorial',
   lat: 38.8861,
   lon: -77.0450
-},{
+}, {
   name: 'Mount Vernon',
   lat: 38.708987,
   lon: -77.086132
@@ -29,16 +29,16 @@ var markers = [{
   name: 'The Pentagon',
   lat: 38.8710,
   lon: -77.0560
-},   {
+}, {
   name: 'The White House',
   lat: 38.8977,
   lon: -77.0366
-},    {
+}, {
   name: 'Udvar Hazy Center',
   lat: 38.9114,
   lon: -77.4441
 
-},{
+}, {
   name: 'US Capitol',
   lat: 38.8898,
   lon: -77.0091
@@ -46,7 +46,7 @@ var markers = [{
   name: 'US Supreme Court',
   lat: 38.8906,
   lon: -77.0044
-},{
+}, {
   name: 'Washington Monument',
   lat: 38.8895,
   lon: -77.0352
@@ -73,7 +73,6 @@ var Place = function(data) {
   self.isSelected = ko.observable(false);
   self.matchesSearch = ko.observable(true);
 };
-
 
 var ViewModel = function() {
   var self = this;
@@ -208,10 +207,9 @@ var ViewModel = function() {
 
       }
     }
-    if (firstPlace.marker){
+    if (firstPlace.marker) {
       self.switchPlace(firstPlace);
-    }
-    else{
+    } else {
       self.switchPlace(self.noPlace);
     }
 
@@ -236,7 +234,12 @@ ko.bindingHandlers.map = {
       zoom: 14,
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       styles: remove_poi,
-      scrollWheel: false
+      scrollwheel: false,
+      draggable: false,
+      zoomControl:false,
+      scaleControl:false,
+      mapTypeControl:false,
+      disableDefaultUI:true
     };
     map = new google.maps.Map(element, mapOptions);
     map.fitBounds(mapObj.bounds);
@@ -244,19 +247,15 @@ ko.bindingHandlers.map = {
     var input = /** @type {HTMLInputElement} */ (
       document.getElementById('pac-input'));
     map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-
-
   },
   update: function(element, valueAccessor, allBindingsAccessor, viewModel) {
     var mapObj = ko.utils.unwrapObservable(valueAccessor());
     var places = ko.utils.unwrapObservable(mapObj.placeList());
     var userMarker = ko.utils.unwrapObservable(mapObj.userPosition);
     for (var place in places) {
-      if (places.hasOwnProperty(place)){
+      if (places.hasOwnProperty(place)) {
         places[place].marker.setMap(map);
       }
-
     }
     userMarker.setMap(map);
     google.maps.event.addListener(map, 'click', function(event) {
@@ -266,9 +265,7 @@ ko.bindingHandlers.map = {
     function placeMarker(location) {
       userMarker.setPosition(location);
     }
-
   }
 };
-
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
