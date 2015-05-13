@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Washington, DC Area Map</title>
+    <meta name=viewport content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp?key=AIzaSyDDF_y9gSOnKMjzLdpCocwsujA7T9b6IgM"></script>
@@ -15,7 +16,7 @@
         <div class ="row main-row">
             <div id = "map-canvas" class="col-md-7" data-bind="map: {mapLatLng,placeList,userPosition,bounds}"></div>
             <div class="col-md-5">
-                <h2>Locations:<span class="badge pull-right h2-badge">UberX Price</span></h2>
+                <h3>Locations:<span class="badge pull-right h2-badge">UberX Price</span></h3>
                 <div class="list-group" data-bind="foreach: placeList">
                     <a href="#" class="list-group-item" data-bind="click:$parent.switchPlace, css: {selected:isSelected}, visible:matchesSearch">
                         <span class = "place-name" data-bind="text: marker.title"></span>
