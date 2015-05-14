@@ -18,6 +18,7 @@ var markers = [{
   lat: 38.8893,
   lon: -77.0501
 }, {
+  //TODO - name is bad for wiki
   name: 'MLK, Jr. Memorial',
   lat: 38.8861,
   lon: -77.0450
@@ -73,7 +74,7 @@ var Place = function(data) {
   self.isSelected = ko.observable(false);
   self.matchesSearch = ko.observable(true);
 };
-
+//TODO clean up this ViewModel
 var ViewModel = function() {
   var self = this;
   self.searchInput = ko.observable('');

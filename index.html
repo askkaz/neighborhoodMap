@@ -14,22 +14,22 @@
             <h1>Washington, DC Area Map</h1>
         </div>
         <div class ="row main-row">
-            <div id = "map-canvas" class="col-md-7" data-bind="map: {mapLatLng,placeList,userPosition,bounds}"></div>
+            <div id = "map-canvas" class="col-md-7" data-bind="map: [mapLatLng, placeList, userPosition, bounds]"></div>
             <div class="col-md-5">
                 <h3>Locations:<span class="badge pull-right h2-badge">UberX Price</span></h3>
                 <div class="list-group" data-bind="foreach: placeList">
-                    <a href="#" class="list-group-item" data-bind="click:$parent.switchPlace, css: {selected:isSelected}, visible:matchesSearch">
+                    <a href="#" class="list-group-item" data-bind="click: $parent.switchPlace, css: {selected: isSelected}, visible: matchesSearch">
                         <span class = "place-name" data-bind="text: marker.title"></span>
-                        <span class="badge place-name" data-bind="text:price, css: { blink_me: updating }"></span>
+                        <span class="badge place-name" data-bind="text: price, css: {blink_me: updating}"></span>
                     </a>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class = "col-md-12">
-                <h3 data-bind = "text:currentPlace().marker.title"></h3>
-                <p data-bind="text:wikiText"></p>
-                <a href="" data-bind="attr : { href : wikiLink }">More info</a>
+                <h3 data-bind = "text: currentPlace().marker.title"></h3>
+                <p data-bind="text: wikiText"></p>
+                <a href="" data-bind="attr : { href: wikiLink }">More info</a>
             </div>
         </div>
 
