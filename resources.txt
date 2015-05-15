@@ -1,1 +1,4 @@
 http://stackoverflow.com/questions/12722925/google-maps-and-knockoutjs
+
+I also got my blinking css from someone's SO answer, but I can't seem to find it.
+
