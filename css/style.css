@@ -30,19 +30,22 @@ body{
 	height: 28%
 }
 .col-places{
-	height:5%;
+
 
 }
 .panel-header,
 .panel-default{
-	/*position: absolute;*/
-	bottom: 0;
+	position: absolute;
+	bottom: 20px;
 }
 .panel.panel-default{
 	width: 100%;
 }
 .panel-container{
 
+}
+.panel-group{
+	margin-bottom:0;
 }
 /*#accordion .collapsing, #accordion .collapse.in
 {
