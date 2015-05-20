@@ -21,29 +21,26 @@
                 <p class="wiki-content" data-bind="with: wikiInfo"><!--ko text: text--><!--/ko--><a href="" data-bind="attr : { href: link }">More info...</a></p>
             </div>
             <div class="panel-group col-xs-12 col-places" id="accordionTwo">
-                <div class="panel-container">
+
                 <div class="panel panel-default">
                     <div class="panel-collapse collapse" id="collapseFour">
                         <div class="list-group" data-bind="foreach:placeList">
                             <a  href="#collapseFour" class="accordion-toggle list-group-item" data-toggle="collapse" data-parent="#accordionTwo" data-bind="click: $parent.switchPlace, css: {selected: isSelected}, visible: matchesSearch">
                                 <span class = "place-name" data-bind="text: marker.title"></span>
-                                <span class="badge place-name" data-bind="text: price, css: {blink_me: updating}"></span>
+                                <span class="badge" data-bind="text: price, css: {blink_me: updating}"></span>
                             </a>
                         </div>
                     </div>
-                    <div class = "panel-heading">
-                        <div class="list-group panel-title" data-bind="with: currentPlace">
+                    <div class = "panel-heading list-group">
+                        <div class="list-group-item panel-title" data-bind="with: currentPlace">
                             <button type="button" class="btn btn-default menu-button" aria-label="Justify" data-toggle="collapse" data-parent="#accordionTwo" href="#collapseFour">
                                 <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>
                             </button>
-                            <span class = "place-name" data-bind="text: marker.title"></span>
-                            <div class = "pull-right collapsed-badge">
-                                <span class="badge place-name badge-middle" data-bind="text: price, css: {blink_me: updating}"></span>
-                            </div>
+                            <span class = "current-place-name" data-bind="text: marker.title"></span>
+                            <span class="badge current-badge" data-bind="text: price, css: {blink_me: updating}"></span>
                         </div>
                     </div>
                 </div>
-            </div>
             </div>
         </div>
     </div>
