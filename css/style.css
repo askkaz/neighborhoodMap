@@ -26,7 +26,8 @@ body,
 .col-wiki{
 	font-size: 16px;
 	text-align: justify;
-	height: 28%
+	height: 28%;
+	overflow-y: scroll;
 }
 .panel.panel-default{
 	width: 100%;
@@ -36,7 +37,7 @@ body,
 }
 #accordionTwo{
 	position: absolute;
-	bottom: 10px;
+	bottom: 0;
 }
 .panel-heading{
 	padding: 0;
@@ -53,10 +54,23 @@ body,
 	padding: 5px;
 }
 .panel-default .panel-heading .current-badge{
-	margin: 6px 0 0 0;
+	margin: 3px 0 0 0;
 	background-color: #403b33;
 	color: #94c7b6;
 }
+.uber-price-title{
+	margin:0;
+	font-size: 14px;
+}
+.title-badges{
+	float: right;
+	margin:0 10px 0 0;
+	text-align: center;
+}
+.list-group-item.panel-title{
+	padding:0;
+}
+
 .list-group-item{
 	background-color: #d6e1C7;
 	border-color: #403b33;
@@ -71,6 +85,7 @@ a.list-group-item:hover{
 
 .btn-default{
 	background-color: #94c7b6;
+	margin:10px;
 }
 .btn-default.active,
 .btn-default.focus,
