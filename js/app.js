@@ -185,9 +185,9 @@ var ViewModel = function() {
       });
       clearTimeout(uberTimeout);
     });
-  };
-  this.noPlace = new Place(offMapMarker);
-  this.searchInput.subscribe(function(newVal) {
+};
+this.noPlace = new Place(offMapMarker);
+this.searchInput.subscribe(function(newVal) {
     var firstPlace = {}; //define var to hold first search
     var re = new RegExp('(^|\\s)' + newVal, 'i');
     for (var place in self.placeList()) {
@@ -237,7 +237,7 @@ ko.bindingHandlers.map = {
       zoom: 12,
       zoomControlOptions: {
         position: google.maps.ControlPosition.RIGHT_TOP
-    }
+      }
       //draggable: $(document).width() > 480 ? true : false //Turn off panning for mobile.
     };
     map = new google.maps.Map(element, mapOptions);
@@ -263,7 +263,7 @@ ko.bindingHandlers.map = {
 
     var userMarker = ko.utils.unwrapObservable(mapObj.user);
     userMarker.setMap(map);
-        google.maps.event.addListener(map, 'click', function(event) {
+    google.maps.event.addListener(map, 'click', function(event) {
       placeMarker(event.latLng);
     });
 
@@ -275,6 +275,24 @@ ko.bindingHandlers.map = {
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
 
+function checkWidth(){
+  if ($(document).width() > 767){
+    $('.accordion-toggle').attr('data-toggle','');
+    $('.panel-collapse').collapse('show');
+  }
+  else{
+    $('.accordion-toggle').attr('data-toggle','collapse');
+    $('.panel-collapse').collapse('hide');
 
+  }
+}
+
+$(window).resize(function(){
+  checkWidth();
+})
+
+$(document).ready(function(){
+  checkWidth()
+});
 
 
