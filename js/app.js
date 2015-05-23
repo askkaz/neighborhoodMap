@@ -108,8 +108,8 @@ var userLon = -77.27;
     icon: 'https://maps.google.com/mapfiles/arrow.png'
   });
   google.maps.event.addListener(self.userPosition, 'position_changed', function() {
-    self.userLatitude(self.position.lat());
-    self.userLongitude(self.position.lng());
+    self.userLatitude(this.position.lat());
+    self.userLongitude(this.position.lng());
     self.updatePrices();
 
   });
