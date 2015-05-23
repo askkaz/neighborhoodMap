@@ -5,46 +5,64 @@
     <title>Washington, DC Area Map</title>
     <meta name=viewport content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="css/bootstrap.min.css">
-    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/style2.css">
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp?key=AIzaSyDDF_y9gSOnKMjzLdpCocwsujA7T9b6IgM"></script>
 </head>
 <body>
     <div class="container">
         <div class="row row-main">
+
+
+
+
+
             <div class="col-xs-12 col-search">
-                <input id="pac-input" class="search-box" type="text" placeholder="Search Locations in DC" data-bind = "value: searchInput, valueUpdate: 'afterkeydown'">
+                <input id="pac-input" class="search-box" type="text" placeholder="Search Locations in DC..." data-bind = "value: searchInput, valueUpdate: 'afterkeydown'">
             </div>
-            <div class="col-xs-12 col-map" data-bind="map: {mapCenter: mapLatLng, places: placeList, user: userPosition, mapBounds: bounds}">
+            <div class="col-xs-12 col-map">
+                <div class="map" data-bind="map: {mapCenter: mapLatLng, places: placeList, user: userPosition, mapBounds: bounds}">
+                </div>
             </div>
 
             <div class="col-xs-12 col-wiki">
                 <p class="wiki-content" data-bind="with: wikiInfo"><!--ko text: text--><!--/ko--><a href="" data-bind="attr : { href: link }">More info...</a></p>
             </div>
+
             <div class="panel-group col-xs-12 col-places" id="accordionTwo">
-                <div class="panel-container">
                 <div class="panel panel-default">
-                    <div class="panel-collapse collapse" id="collapseFour">
+                    <div class="panel-collapse collapse panel-scroll" id="collapseFour">
                         <div class="list-group" data-bind="foreach:placeList">
-                            <a  href="#collapseFour" class="accordion-toggle list-group-item" data-toggle="collapse" data-parent="#accordionTwo" data-bind="click: $parent.switchPlace, css: {selected: isSelected}, visible: matchesSearch">
-                                <span class = "place-name" data-bind="text: marker.title"></span>
-                                <span class="badge place-name" data-bind="text: price, css: {blink_me: updating}"></span>
-                            </a>
+                            <div  class="list-group-item" data-bind="click: $parent.switchPlace, css: {selected: isSelected}, visible: matchesSearch">
+                                <a href = "#collapseFour" class="accordion-toggle" data-toggle="collapse" data-parent="#accordionTwo"><span class = "list-group-link"></span></a>
+                                <div class="place-name-div">
+                                    <span class = "place-name" data-bind="text: marker.title"></span>
+                                </div>
+                                <div class="badge-div">
+                                    <span class="badge" data-bind="text: price, css: {blink_me: updating}"></span>
+                                </div>
+                            </div>
+
                         </div>
                     </div>
-                    <div class = "panel-heading">
-                        <div class="list-group panel-title" data-bind="with: currentPlace">
-                            <button type="button" class="btn btn-default menu-button" aria-label="Justify" data-toggle="collapse" data-parent="#accordionTwo" href="#collapseFour">
+                    <div class = "panel-heading list-group" data-bind="with: currentPlace">
+                        <div class = "heading-button">
+                            <a class="btn btn-default menu-button" aria-label="Justify" data-toggle="collapse" data-parent="#accordionTwo" href="#collapseFour">
                                 <span class="glyphicon glyphicon-align-justify" aria-hidden="true"></span>
-                            </button>
-                            <span class = "place-name" data-bind="text: marker.title"></span>
-                            <div class = "pull-right collapsed-badge">
-                                <span class="badge place-name badge-middle" data-bind="text: price, css: {blink_me: updating}"></span>
-                            </div>
+                            </a>
+                        </div>
+                        <div class = "heading-place-name" data-bind="text: marker.title">
+
+                        </div>
+                        <div class = "heading-badges">
+                           <p class="uber-price-title">UberX Price<p>
+                                <span class="badge current-badge" data-bind="text: price, css: {blink_me: updating}"></span>
                         </div>
                     </div>
                 </div>
             </div>
-            </div>
+
+
+
         </div>
     </div>
 </div>

@@ -16,10 +16,11 @@
             </div>
             <div class="col-xs-12 col-map" data-bind="map: {mapCenter: mapLatLng, places: placeList, user: userPosition, mapBounds: bounds}">
             </div>
-            <div class="col-xs-12 col-wiki">
+
+            <div class="col-xs-12 col-sm-6 col-wiki ">
                 <p class="wiki-content" data-bind="with: wikiInfo"><!--ko text: text--><!--/ko--><a href="" data-bind="attr : { href: link }">More info...</a></p>
             </div>
-            <div class="panel-group col-xs-12 col-places" id="accordionTwo">
+            <div class="panel-group col-xs-12 col-sm-6 col-places" id="accordionTwo">
                 <div class="panel panel-default">
                     <div class="panel-collapse collapse" id="collapseFour">
                         <div class="list-group" data-bind="foreach:placeList">
@@ -42,8 +43,9 @@
                                 <span class="badge current-badge" data-bind="text: price, css: {blink_me: updating}"></span>
                             </div>
                     </div>
-</div>
+
                 </div>
+            </div>
             </div>
         </div>
     </div>
