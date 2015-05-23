@@ -1,15 +1,16 @@
 html,
 body,
 .row,
-.col-main{
+.col-main {
 	height: 100%;
 	background: #edebe6;
 }
-.container{
-	height: 100%;
 
+.container {
+	height: 100%;
 }
-.search-box{
+
+.search-box {
 	height: 100%;
 	min-height: 20px;
 	width: 100%;
@@ -17,108 +18,127 @@ body,
 	border-width: 3px;
 	padding: 1%;
 }
-.col-search{
+
+.col-search {
 	height: 10%;
 	padding: 2%;
 }
-.col-map{
+
+.col-map {
 	height: 53%;
 	overflow: hidden;
 }
-.map{
-	height:100%;
+
+.map {
+	height: 100%;
 }
-.col-wiki{
+
+.col-wiki {
 	font-size: 16px;
 	text-align: justify;
 	height: 28%; /*fallback for browsers with no support for calc()*/
 	height: calc(37% - 57px);
 	overflow-y: scroll;
-
 }
-.panel.panel-default{
+
+.panel.panel-default {
 	width: 100%;
 }
-.panel-group{
+
+.panel-group {
 	margin: 0;
 }
 
-.panel-default{
+.panel-default {
 		border: 1px solid #403b33;
 }
-.panel-default .panel-heading{
+
+.panel-default .panel-heading {
 	padding: 0;
 	height: 55px;
 	border: 1px solid #403b33;
 	background: #d6e1C7;
 }
-.place-name{
+
+.place-name {
 	font-size: 14px;
 }
-.btn-div{
-	float:left;
+
+.btn-div {
+	float: left;
 	max-width: 20%;
 }
-.place-name-div{
-	float:left;
+
+.place-name-div {
+	float: left;
 	max-width: 60%;
 }
-.badge-div{
+
+.badge-div {
 	max-width: 30%;
-	float:right;
+	float: right;
 
 }
+
 .panel-default .panel-heading .badge,
-.badge{
+.badge {
 	background-color: #403b33;
 	color: #94c7b6;
 	margin: 0;
 	padding: 5px;
 }
-.panel-default .panel-heading .current-badge{
+
+.panel-default .panel-heading .current-badge {
 	margin: 3px 0 0 0;
 	background-color: #403b33;
 	color: #94c7b6;
 }
-.uber-price-title{
-	margin:0;
+
+.uber-price-title {
+	margin: 0;
 	font-size: 14px;
 }
-.list-group-item{
+
+.list-group-item {
 	background-color: #d6e1C7;
 	border: 2px solid #403b33;
 	height: 40px;
-		overflow: hidden;
-	white-space:nowrap;
+	overflow: hidden;
+	white-space: nowrap;
 	text-overflow: ellipsis;
 }
-.list-group-link{
-  position:absolute;
-  width:100%;
-  height:100%;
-  top:0;
+
+.list-group-link {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
   left: 0;
   z-index: 1;
 }
-.selected{
-	background-color: #94c7b6;
-}
-a.list-group-item:hover{
-	background-color: #94c7b6;
+
+.selected {
+	background: #94c7b6;
 }
 
-.btn-default{
-	background-color: #94c7b6;
-	margin:10px;
+a.list-group-item:hover {
+	background: #94c7b6;
 }
+
+.btn-default {
+	background: #94c7b6;
+	margin: 10px;
+}
+
 .btn-default.active,
 .btn-default.focus,
 .btn-default:active,
 .btn-default:focus,
 .btn-default:hover,
-.open .dropdown-toggle.btn-default{
-	background-color: #d6e1C7;
+.open .dropdown-toggle.btn-default {
+	background: #d6e1C7;
 }
+
 .blink_me {
     -webkit-animation-name: blinker;
     -webkit-animation-duration: 1s;
@@ -154,30 +174,32 @@ a.list-group-item:hover{
     100% { opacity: 1.0; }
 }
 
-.heading-button{
-	float:left;
-	width:20%;
+.heading-button {
+	float: left;
+	width: 20%;
 	height: 100%;
 }
 
-.heading-place-name{
-	float:left;
-	width:50%;
-	height:100%;
+.heading-place-name {
+	float: left;
+	width: 50%;
+	height: 100%;
 	padding: 16px 0 0 0;
 	overflow: hidden;
-	white-space:nowrap;
+	white-space: nowrap;
 	text-overflow: ellipsis;
 }
-.heading-badges{
-	float:right;
-	width:30%;
+
+.heading-badges {
+	float: right;
+	width: 30%;
 	height: 100%;
 	white-space: nowrap;
     text-align: right;
     padding: 0 15px 0 0;
 
 }
+
 .panel-scroll {
     max-height: 250px;
     max-height: 80vh;
@@ -186,31 +208,33 @@ a.list-group-item:hover{
   }
 
 @media screen and (max-width: 767px){
-	.col-places{
+	.col-places {
 		position: absolute;
 		bottom: 0;
-		margin:0;
+		margin: 0;
 	}
-	.sm-list-title{
+
+	.sm-list-title {
 		display: none;
 	}
-	.panel-heading{
-		display:block;
+
+	.panel-heading {
+		display: block;
 	}
 }
 
 @media screen and (min-width: 768px){
-	.col-places{
+	.col-places {
 		position: static;
 		margin: 10% 0 0 0;
 		margin: 10vh 0 0 0;
 	}
-	.sm-list-title{
+
+	.sm-list-title {
 		display: block;
 	}
-	.panel-heading{
-		display:none;
+
+	.panel-heading {
+		display: none;
 	}
-
 }
-

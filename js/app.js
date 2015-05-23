@@ -53,72 +53,78 @@ var mapCenterLatitude = 38.9;
 var mapCenterLongitude = -77.0;
 var userLat = 38.78;
 var userLon = -77.27;
-
-
-var Place = function(data) {
+/**
+ * Represents a place in the region of interest.
+ * @constructor
+ * @param {object} data - contains a google latLng and name for the place
+ */
+ var Place = function(data) {
   var self=this;
-  this.marker = new google.maps.Marker({
+  self.marker = new google.maps.Marker({
     position: data.latLng,
     title: data.name
   });
   //Add listener for someone clicking a place on the map to switch selection
-  google.maps.event.addListener(this.marker, 'click', function() {
+  google.maps.event.addListener(self.marker, 'click', function() {
     viewModel.switchPlace(self);
   });
-  this.price = ko.observable('Unavailable');
-  this.updating = ko.observable(false);
-  this.isSelected = ko.observable(false);
-  this.matchesSearch = ko.observable(true);
+  self.price = ko.observable('Unavailable');
+  self.updating = ko.observable(false);
+  self.isSelected = ko.observable(false);
+  self.matchesSearch = ko.observable(true);
 };
-
-var Wiki=function(){
+/**
+ * Represents the wiki data currently displayed.
+ * @constructor
+ */
+ var Wiki=function(){
   var self=this;
   self.text=ko.observable('');
   self.link=ko.observable('#');
 };
-
-var ViewModel = function() {
+/**
+ * Represents the view model for knockout to bind to.
+ * @constructor
+ */
+ var ViewModel = function() {
   var self = this;
-  this.wikiText = ko.observable('');
-  this.wikiLink = ko.observable('');
-  this.wikiInfo = ko.observable(new Wiki());
+  self.wikiText = ko.observable('');
+  self.wikiLink = ko.observable('');
+  self.wikiInfo = ko.observable(new Wiki());
   //Map Properties
-  this.searchInput = ko.observable('');
-  this.mapLatLng = new google.maps.LatLng(mapCenterLatitude, mapCenterLongitude);
-  this.bounds = new google.maps.LatLngBounds();
-  this.iWindow = new google.maps.InfoWindow({
+  self.searchInput = ko.observable('');
+  self.mapLatLng = new google.maps.LatLng(mapCenterLatitude, mapCenterLongitude);
+  self.bounds = new google.maps.LatLngBounds();
+  self.iWindow = new google.maps.InfoWindow({
     content: ''
   });
-
   //Define User Properties
-  this.userLatitude=ko.observable(userLat);
-  this.userLongitude = ko.observable(userLon);
-  this.userLatLng = new google.maps.LatLng(this.userLatitude(), this.userLongitude());
-  this.userPosition = new google.maps.Marker({
+  self.userLatitude=ko.observable(userLat);
+  self.userLongitude = ko.observable(userLon);
+  self.userLatLng = new google.maps.LatLng(self.userLatitude(), self.userLongitude());
+  self.userPosition = new google.maps.Marker({
     position: self.userLatLng,
     title: "You are here",
     icon: 'https://maps.google.com/mapfiles/arrow.png'
   });
-  // this.userWindow = new google.maps.InfoWindow({
-  //   content: '<h5>Click on the map to change your start location!</h5>'
-  // });
-  //this.userWindow.open(map, this.userPosition);
-  google.maps.event.addListener(this.userPosition, 'position_changed', function() {
-    self.userLatitude(this.position.lat());
-    self.userLongitude(this.position.lng());
+  google.maps.event.addListener(self.userPosition, 'position_changed', function() {
+    self.userLatitude(self.position.lat());
+    self.userLongitude(self.position.lng());
     self.updatePrices();
-    //self.userWindow.close();
-  });
 
+  });
   //Places
-  this.placeList = ko.observableArray([]);
-  this.currentPlace = ko.observable();
+  self.placeList = ko.observableArray([]);
+  self.currentPlace = ko.observable();
   markers.forEach(function(markerItem) {
     self.placeList.push(new Place(markerItem));
     self.bounds.extend(markerItem.latLng); //extend bounds to fit markers
   });
-
-  this.updateWiki = function() {
+  /**
+  * Function that is called to update the wiki data using their API
+  * @constructor
+  */
+  self.updateWiki = function() {
     var wikiRequest = 'https://en.wikipedia.org/w/api.php?action=query&prop=extracts&exchars=300&explaintext&titles=' + self.currentPlace().marker.title + '&format=json&redirects';
     var wikiTimeout = setTimeout(function() {
       self.wikiInfo().text("Failed to get wiki resources");
@@ -136,11 +142,19 @@ var ViewModel = function() {
           }
         }
         clearTimeout(wikiTimeout);
+      },
+      error: function(){
+        self.wikiInfo().text('Error getting wiki info...');
+        clearTimeout(wikiTimeout);
       }
     });
   };
-
-  this.switchPlace = function(clickedPlace) {
+  /**
+  * Function that is called to switch the current place in the view model
+  * @constructor
+  * @param {Place} clickedPlace, the currently selected place
+  */
+  self.switchPlace = function(clickedPlace) {
     if (self.currentPlace()) {
       self.currentPlace().isSelected(false);
     }
@@ -150,8 +164,11 @@ var ViewModel = function() {
     self.currentPlace().isSelected(true);
     self.updateWiki();
   };
-
-  this.updatePrices = function() {
+  /**
+  * Function that is called to update the pricing data using the UBER API
+  * @constructor
+  */
+  self.updatePrices = function() {
     self.placeList().forEach(function(place) {
       place.price('Fetching...');
       place.updating(true);
@@ -186,8 +203,8 @@ var ViewModel = function() {
       clearTimeout(uberTimeout);
     });
 };
-this.noPlace = new Place(offMapMarker);
-this.searchInput.subscribe(function(newVal) {
+self.noPlace = new Place(offMapMarker);
+self.searchInput.subscribe(function(newVal) {
     var firstPlace = {}; //define var to hold first search
     var re = new RegExp('(^|\\s)' + newVal, 'i');
     for (var place in self.placeList()) {
@@ -211,14 +228,12 @@ this.searchInput.subscribe(function(newVal) {
     }
   });
   //Initialize selected place and prices
-  this.switchPlace(this.placeList()[2]);
-  this.updatePrices();
-};
+  self.switchPlace(self.placeList()[2]);
+  self.updatePrices();
 
-
-ko.bindingHandlers.map = {
-  init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
-    var mapObj = ko.utils.unwrapObservable(valueAccessor());
+  ko.bindingHandlers.map = {
+    init: function(element, valueAccessor, allBindingsAccessor, viewModel) {
+      var mapObj = ko.utils.unwrapObservable(valueAccessor());
     //Remove the native google maps POI popups
     var remove_poi = [{
       "featureType": "poi",
@@ -228,7 +243,6 @@ ko.bindingHandlers.map = {
       }]
     }];
     var mapOptions = {
-
       mapTypeId: google.maps.MapTypeId.ROADMAP,
       styles: remove_poi,
       streetViewControl: false,
@@ -238,21 +252,10 @@ ko.bindingHandlers.map = {
       zoomControlOptions: {
         position: google.maps.ControlPosition.RIGHT_TOP
       }
-      //draggable: $(document).width() > 480 ? true : false //Turn off panning for mobile.
     };
     map = new google.maps.Map(element, mapOptions);
     map.fitBounds(mapObj.mapBounds);
-    //map.setCenter({lat: -34, lng: 151});
     google.maps.event.addDomListener(window, 'load', this);
-    //search input
-
-
-    //     if ($(document).width() > 480){
-    //       var input = /** @type {HTMLInputElement} */ (
-    //   document.getElementById('pac-input'));
-    // map.controls[google.maps.ControlPosition.TOP_LEFT].push(input);
-
-    // }
     //markers
     var places = ko.utils.unwrapObservable(mapObj.places());
     for (var place in places) {
@@ -260,21 +263,23 @@ ko.bindingHandlers.map = {
         places[place].marker.setMap(map);
       }
     }
-
     var userMarker = ko.utils.unwrapObservable(mapObj.user);
     userMarker.setMap(map);
     google.maps.event.addListener(map, 'click', function(event) {
       placeMarker(event.latLng);
     });
-
     function placeMarker(location) {
       userMarker.setPosition(location);
     }
   }
 };
+};
 var viewModel = new ViewModel();
 ko.applyBindings(viewModel);
-
+/**
+* Function that is called to update the page based on page width
+* @constructor
+*/
 function checkWidth(){
   if ($(document).width() > 767){
     $('.accordion-toggle').attr('data-toggle','');
@@ -286,11 +291,9 @@ function checkWidth(){
 
   }
 }
-
 $(window).resize(function(){
   checkWidth();
 });
-
 $(document).ready(function(){
   checkWidth();
 });

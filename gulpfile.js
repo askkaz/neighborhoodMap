@@ -13,7 +13,7 @@ var bases = {
 };
 
 var paths = {
- scripts: ['js/**/app.js'],
+ scripts: ['js/app.js'],
  styles: ['css/style.css'],
  html: ['index.html'],
  extras: ['README.md', 'resources.txt'],
@@ -56,8 +56,7 @@ gulp.src("index.html")
             {
 
                 file: 'js/jquery-2.1.3.min.js',
-                test: 'window.jQuery',
-                cdn: 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'
+                cdn: 'google:jquery@2.1.3'
             }
         ]))
         .pipe(gulp.dest(bases.dist));
