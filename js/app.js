@@ -75,13 +75,13 @@ var Wiki=function(){
   var self=this;
   self.text=ko.observable('');
   self.link=ko.observable('#');
-}
+};
 
 var ViewModel = function() {
   var self = this;
   this.wikiText = ko.observable('');
   this.wikiLink = ko.observable('');
-  this.wikiInfo = ko.observable(new Wiki);
+  this.wikiInfo = ko.observable(new Wiki());
   //Map Properties
   this.searchInput = ko.observable('');
   this.mapLatLng = new google.maps.LatLng(mapCenterLatitude, mapCenterLongitude);
@@ -289,10 +289,8 @@ function checkWidth(){
 
 $(window).resize(function(){
   checkWidth();
-})
-
-$(document).ready(function(){
-  checkWidth()
 });
 
-
+$(document).ready(function(){
+  checkWidth();
+});

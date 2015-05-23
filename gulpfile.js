@@ -1,17 +1,68 @@
 var gulp = require('gulp');
-var jsmin = require('gulp-jsmin');
-var rename = require('gulp-rename');
+
+var clean = require('gulp-clean');
+var jshint = require('gulp-jshint');
+var concat = require('gulp-concat');
+var uglify = require('gulp-uglify');
 var minifyCss = require('gulp-minify-css');
+var cdnizer = require("gulp-cdnizer");
 
-gulp.task('default', function () {
-    gulp.src('js-dev/app.js')
-        .pipe(jsmin())
-        .pipe(rename({suffix: '.min'}))
-        .pipe(gulp.dest('js/'));
+var bases = {
+ dist: 'dist/',
+ app: ''
+};
+
+var paths = {
+ scripts: ['js/**/app.js'],
+ styles: ['css/style.css'],
+ html: ['index.html'],
+ extras: ['README.md', 'resources.txt'],
+};
+
+// Delete the dist directory
+gulp.task('clean', function() {
+ return gulp.src(bases.dist)
+ .pipe(clean());
 });
 
-gulp.task('minify-css', function() {
-  return gulp.src('css-dev/style.css')
-    .pipe(minifyCss({compatibility: 'ie8'}))
-    .pipe(gulp.dest('css/'));
+// Process scripts and concatenate them into one output file
+gulp.task('scripts', ['clean'], function() {
+ gulp.src(paths.scripts, {cwd: bases.app})
+ .pipe(jshint())
+ .pipe(jshint.reporter('default'))
+ .pipe(uglify())
+ .pipe(concat('app.js'))
+ .pipe(gulp.dest(bases.dist + 'js/'));
 });
+
+gulp.task('css',['clean'],function(){
+	gulp.src(paths.styles, {cwd: bases.app})
+	.pipe(minifyCss({compatibility: 'ie8'}))
+	.pipe(gulp.dest(bases.dist + 'css/'));
+});
+// Copy all other files to dist directly
+gulp.task('copy', ['clean'], function() {
+ // Copy html
+ gulp.src(paths.html, {cwd: bases.app})
+ .pipe(gulp.dest(bases.dist));
+
+ // Copy extra html5bp files
+ gulp.src(paths.extras, {cwd: bases.app})
+ .pipe(gulp.dest(bases.dist));
+});
+gulp.task('cdn',['clean'],function(){
+gulp.src("index.html")
+        .pipe(cdnizer([
+            {
+
+                file: 'js/jquery-2.1.3.min.js',
+                test: 'window.jQuery',
+                cdn: 'https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js'
+            }
+        ]))
+        .pipe(gulp.dest(bases.dist));
+});
+
+
+// Define the default task as a sequence of the above tasks
+gulp.task('default', ['clean', 'scripts', 'css', 'cdn','copy']);
