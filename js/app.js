@@ -211,7 +211,7 @@ this.searchInput.subscribe(function(newVal) {
     }
   });
   //Initialize selected place and prices
-  this.switchPlace(this.placeList()[0]);
+  this.switchPlace(this.placeList()[2]);
   this.updatePrices();
 };
 
