@@ -38,7 +38,7 @@ body,
 	text-align: justify;
 	height: 28%; /*fallback for browsers with no support for calc()*/
 	height: calc(37% - 57px);
-	overflow-y: scroll;
+	overflow-y: auto;
 }
 
 .panel.panel-default {
@@ -237,4 +237,7 @@ a.list-group-item:hover {
 	.panel-heading {
 		display: none;
 	}
+}
+.list-group-item.sm-list-title {
+	border-radius: 0;
 }
